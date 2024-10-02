@@ -9,6 +9,9 @@ Rails.application.routes.draw do
 
     scope 'auth' do
       post '/login', to: 'auth#login'
+      post '/register', to: 'auth#register'
+      post '/logout', to: 'auth#logout'
+      get '/me', to: 'auth#me'
     end
 
   end

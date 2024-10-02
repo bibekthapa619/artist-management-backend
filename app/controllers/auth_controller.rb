@@ -1,4 +1,5 @@
 class AuthController < ApplicationController
+    before_action :authenticate_request, only: [:logout, :me]
     
     def login
         user = User.find_by(email:login_params[:email])
@@ -11,12 +12,34 @@ class AuthController < ApplicationController
         end
     end
 
+    def register
+        user = User.new(register_params)
+
+        if user.save
+            render_success(nil, 'Registration successful')
+        else
+            render_error(user.errors.full_messages, 'Registration failed')
+        end
+    end
+
+    def logout
+        render_success(nil, 'Logout successful')
+    end
+
+    def me
+        render_success(@current_user,'User details fetched.')
+    end
+
     private
 
     def login_params
         params.require(:email)
         params.require(:password)
         params.permit(:email, :password)
+    end
+
+    def register_params
+        params.permit(:first_name, :last_name, :email, :password).merge(role: :super_admin)
     end
 
 end

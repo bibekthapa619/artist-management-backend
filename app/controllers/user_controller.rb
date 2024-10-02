@@ -15,7 +15,8 @@ class UserController < ApplicationController
                 users: users, 
                 meta: {
                     total_pages: users.total_pages, 
-                    current_page: users.current_page
+                    current_page: users.current_page,
+                    total: users.total_count 
                 } 
             }
         )
@@ -36,7 +37,7 @@ class UserController < ApplicationController
     end
 
     def update
-        result = @user_service.update_user(@user, user_update_params)
+        result = @user_service.update_user(@user.id, user_update_params)
 
         if result[:success]
             render_success({ user: result[:user] }, 'User updated successfully')
@@ -46,7 +47,7 @@ class UserController < ApplicationController
     end
 
     def destroy
-        if @user_service.delete_user(@user)
+        if @user_service.delete_user(@user.id)
             render_success(nil, 'User deleted successfully')
         else
             render_error(nil, 'User not found', :not_found)

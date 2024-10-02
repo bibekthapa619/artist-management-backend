@@ -21,15 +21,17 @@ class UserService
         users.page(page).per(per_page)
     end
 
-    def update_user(user, params)
-        if user.update(params)
+    def update_user(user_id, params)
+        user = find_user(user_id)
+        if user && user.update(params)
             { success: true, user: user }
         else
             { success: false, user: user }
         end
     end
 
-    def delete_user(user)
-        user.destroy
+    def delete_user(user_id)
+        user = find_user(user_id)
+        user.destroy if user
     end
 end

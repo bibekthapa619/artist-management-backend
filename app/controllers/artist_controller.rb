@@ -86,7 +86,8 @@ class ArtistController < ApplicationController
     end
 
     def user_params
-        params.require(:user).permit(:first_name, :last_name, :email ,:dob, :gender, :address, :phone, :password).merge(role: 'artist')
+        super_admin_id = @current_user.role == 'super_admin' ? @current_user.id : @current_user.super_admin_id
+        params.require(:user).permit(:first_name, :last_name, :email ,:dob, :gender, :address, :phone, :password).merge(role: 'artist', super_admin_id: super_admin_id)
     end
 
     def set_artist_service

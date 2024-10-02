@@ -12,7 +12,8 @@ class UserController < ApplicationController
         per_page = params[:per_page] || 10
         search = params[:search]
 
-        users = @user_service.list_users(page, per_page, search)
+
+        users = @user_service.list_users(page, per_page,@current_user.id ,search)
         render_success(
             { 
                 users: users, 
@@ -69,11 +70,11 @@ class UserController < ApplicationController
     end
 
     def user_params
-        params.require(:user).permit(:first_name, :last_name, :email, :phone, :dob, :gender, :role, :address, :password)
+        params.require(:user).permit(:first_name, :last_name, :email, :phone, :dob, :gender, :role, :address, :password).merge(super_admin_id: @current_user.id)
     end
 
     def user_update_params
-        params.require(:user).permit(:first_name, :last_name, :email, :phone, :dob, :gender, :role, :address)
+        params.require(:user).permit(:first_name, :last_name, :email, :phone, :dob, :gender, :address)
     end
 
     def set_user_service

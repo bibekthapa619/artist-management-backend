@@ -27,7 +27,7 @@ class ArtistController < ApplicationController
     end
 
     def show
-        render_success({ artist: artist_with_user_details(@artist) }, 'Artist fetched successfully')
+        render_success({ artist: @artist.as_json(include: { user: { except: [:password_digest, :created_at, :updated_at] } }) }, 'Artist fetched successfully')
     end
 
     def create
@@ -97,7 +97,4 @@ class ArtistController < ApplicationController
         @user_service = UserService.new
     end
 
-    def artist_with_user_details(artist)
-        artist.as_json(include: { user: { only: [:id, :first_name, :last_name, :email] } })
-    end
 end

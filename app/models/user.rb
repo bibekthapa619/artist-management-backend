@@ -7,8 +7,8 @@ class User < ApplicationRecord
     validates :email, :phone, uniqueness: true
     validates :email, :password_digest, :first_name, :last_name, :role, presence: true
 
-    has_many :artist_managers, class_name: 'User', foreign_key: :super_admin_id, dependent: :nullify
-    has_many :artists, class_name: 'User', foreign_key: :super_admin_id, dependent: :nullify
+    has_many :artist_managers, -> { where(role: :artist_manager) }, class_name: 'User', foreign_key: :super_admin_id, dependent: :nullify
+    has_many :artists, -> { where(role: :artist) },class_name: 'User', foreign_key: :super_admin_id, dependent: :nullify
 
     scope :artist_managers_only, -> { where(role: :artist_manager) }
     scope :artists_only, -> { where(role: :artist) }

@@ -16,4 +16,8 @@ class User < ApplicationRecord
     def as_json(options = {})
         super(options.merge(except: [:password_digest]))
     end
+
+    def check_role(roles: [])
+        roles.include?(role)
+    end
 end

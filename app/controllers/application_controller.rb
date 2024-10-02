@@ -26,4 +26,10 @@ class ApplicationController < ActionController::Base
             render_error(nil,'Unauthorized',:unauthorized)
         end
     end
+
+    def has_role(roles:)
+        unless @current_user.check_role(roles: roles)
+          render_error(nil, 'Unauthorized: You do not have permission to perform this action.', :forbidden)
+        end
+    end
 end

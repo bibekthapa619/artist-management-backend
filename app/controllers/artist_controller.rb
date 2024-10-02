@@ -2,6 +2,9 @@ class ArtistController < ApplicationController
     before_action :set_artist_service
     before_action :set_user_service
     before_action :authenticate_request
+    before_action only: [:create, :update,:index, :destroy] do
+        has_role(roles:['super_admin', 'artist_manager'])
+    end
     before_action :set_artist, only: [:show, :update, :destroy]
 
     def index

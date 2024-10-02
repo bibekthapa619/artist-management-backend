@@ -2,6 +2,9 @@ class UserController < ApplicationController
 
     before_action :set_user_service
     before_action :authenticate_request
+    before_action do
+        has_role(roles:['super_admin'])
+    end
     before_action :set_user, only: [:show, :update, :destroy]
 
     def index

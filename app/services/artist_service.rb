@@ -14,6 +14,10 @@ class ArtistService
     def find_artist(id)
       Artist.includes(:user).find_by(id: id)  
     end
+
+    def find_artist_by_user_id(user_id)
+        Artist.includes(:user).find_by(user_id: user_id)  
+      end
   
     def create_artist(params)
       Artist.new(params)

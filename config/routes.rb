@@ -24,6 +24,14 @@ Rails.application.routes.draw do
       post '/', to: 'artist#create'
     end 
 
+    scope 'musics' do
+      get '/', to: 'music#index'
+      get '/:id', to: 'music#show'
+      put '/:id', to: 'music#update'
+      delete '/:id', to: 'music#destroy'
+      post '/', to: 'music#create'
+    end 
+
   end
 
 end

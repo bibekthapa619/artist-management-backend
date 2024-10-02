@@ -2,11 +2,11 @@ Rails.application.routes.draw do
   scope 'api', defaults: { format: :json } do
 
     scope 'users' do
-      get '/', to: 'users#index'
-      get '/:id', to: 'users#show'
-      put '/:id', to: 'users#update'
-      delete '/:id', to: 'users#destroy'
-      post '/', to: 'users#create'
+      get '/', to: 'user#index'
+      get '/:id', to: 'user#show'
+      put '/:id', to: 'user#update'
+      delete '/:id', to: 'user#destroy'
+      post '/', to: 'user#create'
     end 
 
     scope 'auth' do

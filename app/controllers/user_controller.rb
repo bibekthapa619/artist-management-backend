@@ -1,4 +1,4 @@
-class UsersController < ApplicationController
+class UserController < ApplicationController
 
     before_action :set_user_service
     before_action :authenticate_request

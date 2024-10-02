@@ -2,6 +2,7 @@ class UserService
 
     def create_user(params)
         user = User.new(params)
+        user.save!
         return user
     end
 
@@ -23,15 +24,12 @@ class UserService
 
     def update_user(user_id, params)
         user = find_user(user_id)
-        if user && user.update(params)
-            { success: true, user: user }
-        else
-            { success: false, user: user }
-        end
+        user.update!(params)
+        return user
     end
 
     def delete_user(user_id)
         user = find_user(user_id)
-        user.destroy if user
+        user.destroy!
     end
 end

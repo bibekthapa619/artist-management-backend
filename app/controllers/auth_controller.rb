@@ -15,11 +15,9 @@ class AuthController < ApplicationController
     def register
         user = User.new(register_params)
 
-        if user.save
-            render_success(nil, 'Registration successful')
-        else
-            render_error(user.errors.full_messages, 'Registration failed')
-        end
+        user.save!
+        render_success(nil, 'Registration successful')
+
     end
 
     def logout

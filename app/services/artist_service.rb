@@ -22,23 +22,21 @@ class ArtistService
     end
   
     def create_artist(params)
-      Artist.new(params)
+      artist = Artist.new(params)
+      artist.save!
+      artist
     end
   
     def update_artist(id, params)
       artist = find_artist(id)
-      return { success: false, artist: nil } unless artist
   
-      if artist.update(params)
-        { success: true, artist: artist }
-      else
-        { success: false, artist: artist }
-      end
+      artist.update!(params)
+      artist
     end
   
     def delete_artist(id)
       artist = find_artist(id)
-      artist&.destroy
+      artist.destroy!
     end
 end
   

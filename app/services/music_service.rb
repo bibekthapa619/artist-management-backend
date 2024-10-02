@@ -12,7 +12,9 @@ class MusicService
     end
   
     def create_music(params)
-        Music.new(params)
+        music = Music.new(params)
+        music.save!
+        music
     end
   
     def find_music(id)
@@ -21,20 +23,12 @@ class MusicService
   
     def update_music(id, params)
         music = find_music(id)
-        return { success: false, music: nil } unless music
-    
-        if music.update(params)
-            { success: true, music: music }
-        else
-            { success: false, music: music }
-        end
+        music.update!(params)
     end
   
     def delete_music(id)
         music = find_music(id)
-        return false unless music
-    
-        music.destroy
+        music.destroy!
     end
   end
   

@@ -35,30 +35,20 @@ class MusicController < ApplicationController
   
     def create
         music = @music_service.create_music(music_params)
-    
-        if music.save
-            render_success({ music: music }, 'Music created successfully', :created)
-        else
-            render_error(music.errors.full_messages, 'Something went wrong.', :unprocessable_entity)
-        end
+        render_success({ music: music }, 'Music created successfully', :created)
     end
   
     def update
-        result = @music_service.update_music(params[:id], music_params)
+        music = @music_service.update_music(params[:id], music_params)
   
-        if result[:success]
-            render_success({ music: result[:music] }, 'Music updated successfully')
-        else
-            render_error(result[:music].errors.full_messages, 'Something went wrong.', :unprocessable_entity)
-        end
+        render_success({ music: music }, 'Music updated successfully')
+        
     end
   
     def destroy
-        if @music_service.delete_music(params[:id])
-            render_success(nil, 'Music deleted successfully')
-        else
-            render_error(nil, 'Music not found', :not_found)
-        end
+        @music_service.delete_music(params[:id])
+        render_success(nil, 'Music deleted successfully')
+        
     end
   
     private
@@ -84,10 +74,5 @@ class MusicController < ApplicationController
         @artist = @artist_service.find_artist_by_user_id(@current_user.id)
     end
   
-    def has_role(roles:)
-        unless @current_user.check_role(roles: roles)
-            render_error(nil, 'Unauthorized: You do not have permission to perform this action.', :forbidden)
-        end
-    end
   end
   

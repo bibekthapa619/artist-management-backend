@@ -32,7 +32,6 @@ class UserController < ApplicationController
 
     def create
         user = @user_service.create_user(user_params)
-        user.save!
 
         render_success({ user: user }, 'User created successfully', :created)
     end
@@ -40,19 +39,13 @@ class UserController < ApplicationController
     def update
         result = @user_service.update_user(@user.id, user_update_params)
 
-        if result[:success]
-            render_success({ user: result[:user] }, 'User updated successfully')
-        else
-            render_error(result[:user].errors.full_messages, 'Something went wrong.', :unprocessable_entity)
-        end
+        render_success({ user: result }, 'User updated successfully')
+        
     end
 
     def destroy
-        if @user_service.delete_user(@user.id)
-            render_success(nil, 'User deleted successfully')
-        else
-            render_error(nil, 'User not found', :not_found)
-        end
+        @user_service.delete_user(@user.id)
+        render_success(nil, 'User deleted successfully')
     end
 
 

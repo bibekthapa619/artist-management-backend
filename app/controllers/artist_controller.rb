@@ -33,45 +33,22 @@ class ArtistController < ApplicationController
     def create
         ActiveRecord::Base.transaction do
             user = @user_service.create_user(user_params)
-
-            if user.save
-                artist = @artist_service.create_artist(artist_params.merge(user_id: user.id))
-
-                if artist.save
-                    render_success({ artist: artist }, 'Artist created successfully', :created)
-                else
-                    render_error(artist.errors.full_messages, 'Something went wrong.', :unprocessable_entity)
-                end
-            else
-                render_error(user.errors.full_messages, 'Something went wrong.', :unprocessable_entity)
-            end
+            artist = @artist_service.create_artist(artist_params.merge(user_id: user.id))
+            render_success({ artist: artist }, 'Artist created successfully', :created)
         end
     end
 
     def update
         ActiveRecord::Base.transaction do
             user = @user_service.update_user(@artist.user_id, user_params)
-
-            if user[:success]
-                result = @artist_service.update_artist(params[:id], artist_params)
-
-                if result[:success]
-                    render_success({ artist: result[:artist] }, 'Artist updated successfully')
-                else
-                    render_error(result[:artist].errors.full_messages, 'Something went wrong.', :unprocessable_entity)
-                end
-            else
-                render_error(user[:user].errors.full_messages, 'Something went wrong.', :unprocessable_entity)
-            end
+            artist = @artist_service.update_artist(params[:id], artist_params)
+            render_success({ artist: artist }, 'Artist updated successfully')
         end
     end
 
     def destroy
-        if @user_service.delete_user(@artist.user_id) 
-            render_success(nil, 'Artist deleted successfully')
-        else
-            render_error(nil, 'Artist not found', :not_found)
-        end
+        @user_service.delete_user(@artist.user_id) 
+        render_success(nil, 'Artist deleted successfully')
     end
 
     private

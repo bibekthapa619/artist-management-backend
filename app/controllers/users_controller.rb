@@ -1,39 +1,79 @@
 class UsersController < ApplicationController
 
+    before_action :set_user_service
     before_action :authenticate_request
-    before_action :set_user, only: [:show]
+    before_action :set_user, only: [:show, :update, :destroy]
 
     def index
-        users = User.all
-        render json: users
+        page = params[:page] || 1
+        per_page = params[:per_page] || 10
+        search = params[:search]
+
+        users = @user_service.list_users(page, per_page, search)
+        render_success(
+            { 
+                users: users, 
+                meta: {
+                    total_pages: users.total_pages, 
+                    current_page: users.current_page
+                } 
+            }
+        )
     end
 
     def show
-        render json: {
-            user: @user,
-        }, status: :ok
+        render_success({user: @user}, 'User fetched successfully')
     end
 
     def create
-        user = User.new(user_params)
+        user = @user_service.create_user(user_params)
         
         if user.save
-          render json: { message: 'User created successfully', user: user }, status: :created
+            render_success({user: user}, 'User created successfully', :created)
         else
-          render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
+            render_error(user.errors.full_messages,'Something went wrong.' ,:unprocessable_entity)
         end
     end
+
+    def update
+        result = @user_service.update_user(@user, user_update_params)
+
+        if result[:success]
+            render_success({ user: result[:user] }, 'User updated successfully')
+        else
+            render_error(result[:user].errors.full_messages, 'Something went wrong.', :unprocessable_entity)
+        end
+    end
+
+    def destroy
+        if @user_service.delete_user(@user)
+            render_success(nil, 'User deleted successfully')
+        else
+            render_error(nil, 'User not found', :not_found)
+        end
+    end
+
 
     private
 
     def set_user
-        @user = User.find(params[:id])
-        rescue ActiveRecord::RecordNotFound
-        render json: { error: 'User not found' }, status: :not_found
+        @user = @user_service.find_user(params[:id])
+
+        unless @user
+            render_error(nil, 'User not found', :not_found)
+        end
     end
 
     def user_params
         params.require(:user).permit(:first_name, :last_name, :email, :phone, :dob, :gender, :role, :address, :password)
+    end
+
+    def user_update_params
+        params.require(:user).permit(:first_name, :last_name, :email, :phone, :dob, :gender, :role, :address)
+    end
+
+    def set_user_service
+        @user_service = UserService.new()
     end
 
 end

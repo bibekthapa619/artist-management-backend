@@ -5,6 +5,7 @@ class User < ApplicationRecord
     enum role: { super_admin: 0, artist_manager: 1, artist: 2 }
 
     validates :email, :phone, uniqueness: true
+    validates :email, :password_digest, :first_name, :last_name, :role, presence: true
 
     has_many :artist_managers, class_name: 'User', foreign_key: :super_admin_id, dependent: :nullify
     has_many :artists, class_name: 'User', foreign_key: :super_admin_id, dependent: :nullify

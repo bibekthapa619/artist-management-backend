@@ -1,0 +1,24 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8mb4
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: <%= ENV['DB_USERNAME'] %> # Use environment variables for security
+  password: <%= ENV['DB_PASSWORD'] %>
+  host: <%= ENV['DB_HOST'] || 'localhost' %>
+  port: <%= ENV['DB_PORT'] || '3306' %>
+
+development:
+  <<: *default
+  database: artist_mgmt
+
+test:
+  <<: *default
+  database: your_app_test
+
+production:
+  <<: *default
+  database: your_app_production
+  username: your_production_db_user # Use a production-specific username or ENV var
+  password: <%= ENV['DB_PASSWORD'] %>
+  host: <%= ENV['DB_HOST'] || 'localhost' %>
+  pool: 10

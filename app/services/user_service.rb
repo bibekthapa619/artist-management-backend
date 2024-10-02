@@ -7,8 +7,6 @@ class UserService
 
     def find_user(id)
         User.find(id)
-    rescue ActiveRecord::RecordNotFound
-        nil
     end
 
     def list_users(page = 1, per_page = 10,super_admin_id = nil, search = nil)

@@ -17,8 +17,6 @@ class MusicService
   
     def find_music(id)
         Music.find(id)
-    rescue ActiveRecord::RecordNotFound
-         nil
     end
   
     def update_music(id, params)

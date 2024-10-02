@@ -32,12 +32,9 @@ class UserController < ApplicationController
 
     def create
         user = @user_service.create_user(user_params)
-        
-        if user.save
-            render_success({user: user}, 'User created successfully', :created)
-        else
-            render_error(user.errors.full_messages,'Something went wrong.' ,:unprocessable_entity)
-        end
+        user.save!
+
+        render_success({ user: user }, 'User created successfully', :created)
     end
 
     def update
@@ -63,10 +60,6 @@ class UserController < ApplicationController
 
     def set_user
         @user = @user_service.find_user(params[:id])
-
-        unless @user
-            render_error(nil, 'User not found', :not_found)
-        end
     end
 
     def user_params

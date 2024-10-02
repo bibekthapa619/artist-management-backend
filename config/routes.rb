@@ -16,6 +16,14 @@ Rails.application.routes.draw do
       get '/me', to: 'auth#me'
     end
 
+    scope 'artists' do
+      get '/', to: 'artist#index'
+      get '/:id', to: 'artist#show'
+      put '/:id', to: 'artist#update'
+      delete '/:id', to: 'artist#destroy'
+      post '/', to: 'artist#create'
+    end 
+
   end
 
 end

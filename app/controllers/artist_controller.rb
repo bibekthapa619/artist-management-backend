@@ -1,11 +1,12 @@
 class ArtistController < ApplicationController
     before_action :set_artist_service
     before_action :set_user_service
+    before_action :set_music_service, only: [:music]
     before_action :authenticate_request
-    before_action only: [:create, :update,:index, :destroy] do
+    before_action only: [:create, :update,:index, :destroy, :music] do
         has_role(roles:['super_admin', 'artist_manager'])
     end
-    before_action :set_artist, only: [:show, :update, :destroy]
+    before_action :set_artist, only: [:show, :update, :destroy, :music]
 
     def index
         page = params[:page] || 1
@@ -51,6 +52,26 @@ class ArtistController < ApplicationController
         render_success(nil, 'Artist deleted successfully')
     end
 
+    def music
+        page = params[:page] || 1
+        per_page = params[:per_page] || 10
+        search = params[:search]
+    
+        musics = @music_service.list_musics(page, per_page, search, @artist.id)
+        
+        render_success(
+          { 
+            musics: musics, 
+            meta: {
+              total: musics.total_count,
+              total_pages: musics.total_pages,
+              current_page: musics.current_page,
+            }
+          },
+          'Musics fetched successfully'
+        )
+    end
+
     private
 
     def set_artist
@@ -73,6 +94,10 @@ class ArtistController < ApplicationController
 
     def set_user_service
         @user_service = UserService.new
+    end
+
+    def set_music_service
+        @music_service = MusicService.new
     end
 
 end

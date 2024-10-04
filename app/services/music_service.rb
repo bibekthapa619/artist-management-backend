@@ -24,6 +24,7 @@ class MusicService
     def update_music(id, params)
         music = find_music(id)
         music.update!(params)
+        music
     end
   
     def delete_music(id)

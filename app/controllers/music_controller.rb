@@ -1,18 +1,18 @@
 class MusicController < ApplicationController
     before_action :authenticate_request 
-    before_action only: [:create, :update, :destroy] do
+    before_action only: [:create, :update, :destroy, :index] do
         has_role(roles:['artist'])
     end
     before_action :set_music_service
     before_action :set_artist_service
-    before_action :set_artist, only: [:create, :update]
+    before_action :set_artist, only: [:create, :update, :index]
     before_action :set_music, only: [:show, :update, :destroy]
     
     def index
         page = params[:page] || 1
         per_page = params[:per_page] || 10
         search = params[:search]
-        artist_id = params[:artist_id]
+        artist_id = @artist.id
     
         musics = @music_service.list_musics(page, per_page, search, artist_id)
         

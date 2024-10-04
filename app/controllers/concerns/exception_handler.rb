@@ -19,7 +19,7 @@ module ExceptionHandler
     end
   
     def internal_server_error(exception)
-      render_error(nil, 'Internal server error', :internal_server_error)
+      render_error(nil, exception, :internal_server_error)
     end
 
     def format_validation_errors(record)

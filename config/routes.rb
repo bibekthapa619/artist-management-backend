@@ -1,37 +1,37 @@
 Rails.application.routes.draw do
   scope 'api', defaults: { format: :json } do
 
-    scope 'users' do
-      get '/', to: 'user#index'
-      get '/:id', to: 'user#show'
-      put '/:id', to: 'user#update'
-      delete '/:id', to: 'user#destroy'
-      post '/', to: 'user#create'
-    end 
-
-    scope 'auth' do
-      post '/login', to: 'auth#login'
-      post '/register', to: 'auth#register'
-      post '/logout', to: 'auth#logout'
-      get '/me', to: 'auth#me'
+    scope 'users', controller: :user do
+      get '/', action: :index
+      get '/:id', action: :show
+      put '/:id', action: :update
+      delete '/:id', action: :destroy
+      post '/', action: :create
     end
 
-    scope 'artists' do
-      get '/', to: 'artist#index'
-      get '/:id', to: 'artist#show'
-      get '/:id/music', to: 'artist#music'
-      put '/:id', to: 'artist#update'
-      delete '/:id', to: 'artist#destroy'
-      post '/', to: 'artist#create'
-    end 
+    scope 'auth', controller: :auth do
+      post '/login', action: :login
+      post '/register', action: :register
+      post '/logout', action: :logout
+      get '/me', action: :me
+    end
 
-    scope 'musics' do
-      get '/', to: 'music#index'
-      get '/:id', to: 'music#show'
-      put '/:id', to: 'music#update'
-      delete '/:id', to: 'music#destroy'
-      post '/', to: 'music#create'
-    end 
+    scope 'artists', controller: :artist do
+      get '/', action: :index
+      get '/:id', action: :show
+      get '/:id/music', action: :music
+      put '/:id', action: :update
+      delete '/:id', action: :destroy
+      post '/', action: :create
+    end
+
+    scope 'musics', controller: :music do
+      get '/', action: :index
+      get '/:id', action: :show
+      put '/:id', action: :update
+      delete '/:id', action: :destroy
+      post '/', action: :create
+    end
 
   end
 

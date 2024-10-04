@@ -17,14 +17,7 @@ class MusicController < ApplicationController
         musics = @music_service.list_musics(page, per_page, search, artist_id)
         
         render_success(
-          { 
-            musics: musics, 
-            meta: {
-              total: musics.total_count,
-              total_pages: musics.total_pages,
-              current_page: musics.current_page,
-            }
-          },
+          musics,
           'Musics fetched successfully'
         )
     end

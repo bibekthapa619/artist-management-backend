@@ -15,14 +15,7 @@ class ArtistController < ApplicationController
 
         artists = @artist_service.list_artists(page, per_page, search)
         render_success(
-            { 
-                artists: artists, 
-                meta: {
-                    total: artists.total_count,
-                    total_pages: artists.total_pages, 
-                    current_page: artists.current_page, 
-                }
-            }, 
+            artists, 
             'Artists fetched successfully'
         )
     end
@@ -60,14 +53,7 @@ class ArtistController < ApplicationController
         musics = @music_service.list_musics(page, per_page, search, @artist.id)
         
         render_success(
-          { 
-            musics: musics, 
-            meta: {
-              total: musics.total_count,
-              total_pages: musics.total_pages,
-              current_page: musics.current_page,
-            }
-          },
+          musics,
           'Musics fetched successfully'
         )
     end

@@ -1,4 +1,5 @@
 class UserService
+    include PaginationMeta
 
     def create_user(params)
         user = User.new(params)
@@ -19,7 +20,11 @@ class UserService
             users = users.where("CONCAT(first_name, ' ', last_name) LIKE :search OR email LIKE :search OR phone LIKE :search", search: "%#{search}%")
         end
 
-        users.page(page).per(per_page)
+        users = users.page(page).per(per_page)
+        { 
+            users: users, 
+            meta: get_pagination_meta(users)
+        }
     end
 
     def update_user(user_id, params)

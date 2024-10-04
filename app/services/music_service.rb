@@ -1,4 +1,6 @@
 class MusicService
+    include PaginationMeta
+
     def list_musics(page = 1, per_page = 10, search = nil, artist_id = nil)
         musics = Music.all
     
@@ -8,7 +10,12 @@ class MusicService
           musics = musics.where("title LIKE :search OR album_name LIKE :search", search: "%#{search}%")
         end
     
-        musics.page(page).per(per_page)
+        musics = musics.page(page).per(per_page)
+
+        { 
+            musics: musics, 
+            meta: get_pagination_meta(musics)
+        }
     end
   
     def create_music(params)

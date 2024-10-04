@@ -15,14 +15,8 @@ class UserController < ApplicationController
 
         users = @user_service.list_users(page, per_page,@current_user.id ,search)
         render_success(
-            { 
-                users: users, 
-                meta: {
-                    total_pages: users.total_pages, 
-                    current_page: users.current_page,
-                    total: users.total_count 
-                } 
-            }
+            users,
+            'Users fetched successfully'
         )
     end
 

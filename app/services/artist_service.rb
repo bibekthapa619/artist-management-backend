@@ -1,4 +1,5 @@
 class ArtistService
+  include PaginationMeta
     def list_artists(page = 1, per_page = 10, search = nil)
       artists = Artist.select("artists.*, COUNT(musics.id) AS music_count")  
       .left_joins(:musics) 
@@ -10,7 +11,10 @@ class ArtistService
   
       artists = artists.page(page).per(per_page)
   
-      artists
+      { 
+        artists: artists, 
+        meta: get_pagination_meta(artists)
+      }
     end
   
     def find_artist(id)

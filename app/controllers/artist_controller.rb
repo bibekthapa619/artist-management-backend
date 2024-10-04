@@ -1,9 +1,9 @@
 class ArtistController < ApplicationController
     before_action :authenticate_request
     before_action only: [:create, :update,:index, :destroy, :music] do
-        has_role(roles:['super_admin'])
+        has_role(roles:['super_admin','artist_manager'])
     end
-    before_action only: [:create, :update,:index, :destroy, :music, :export_csv, :import_csv] do
+    before_action only: [:export_csv, :import_csv] do
         has_role(roles:['artist_manager'])
     end
     before_action :set_artist_service
@@ -123,7 +123,7 @@ class ArtistController < ApplicationController
     end
 
     def artist_params
-        params.require(:artist).permit(:name, :first_release_year, :no_of_albums_released)
+        params.require(:artist).permit(:name, :no_of_albums_released)
     end
 
     def user_params

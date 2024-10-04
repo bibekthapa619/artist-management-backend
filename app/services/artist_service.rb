@@ -1,3 +1,5 @@
+require 'csv'
+
 class ArtistService
   include PaginationMeta
     def list_artists(page = 1, per_page = 10, search = nil)
@@ -42,5 +44,33 @@ class ArtistService
       artist = find_artist(id)
       artist.destroy!
     end
+
+
+    def export
+      artists = Artist.includes(:user).all 
+
+      csv_data = CSV.generate(headers: true) do |csv|
+        csv << ["first_name", "last_name", "email", "phone", "dob", "gender", "address", "artist_name", "first_release_year", "no_of_albums_released"]
+
+        artists.each do |artist|
+          user = artist.user
+          csv << [
+            user.first_name,
+            user.last_name,
+            user.email,
+            user.phone,
+            user.dob,
+            user.gender,
+            user.address,
+            artist.name,
+            artist.first_release_year,
+            artist.no_of_albums_released
+          ]
+        end
+      end
+
+      csv_data
+    end
+
 end
   

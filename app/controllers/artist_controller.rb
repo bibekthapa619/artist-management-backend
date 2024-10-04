@@ -1,11 +1,14 @@
 class ArtistController < ApplicationController
+    before_action :authenticate_request
+    before_action only: [:create, :update,:index, :destroy, :music] do
+        has_role(roles:['super_admin'])
+    end
+    before_action only: [:create, :update,:index, :destroy, :music, :export_csv, :import_csv] do
+        has_role(roles:['artist_manager'])
+    end
     before_action :set_artist_service
     before_action :set_user_service
     before_action :set_music_service, only: [:music]
-    before_action :authenticate_request
-    before_action only: [:create, :update,:index, :destroy, :music] do
-        has_role(roles:['super_admin', 'artist_manager'])
-    end
     before_action :set_artist, only: [:show, :update, :destroy, :music]
 
     def index
@@ -56,6 +59,60 @@ class ArtistController < ApplicationController
           musics,
           'Musics fetched successfully'
         )
+    end
+
+    def export_csv
+        csv_data = @artist_service.export
+    
+        send_data csv_data, filename: "artists-#{Date.today}.csv", type: 'text/csv'
+    end
+
+    def import_csv
+        if params[:file].nil?
+            render json: { error: 'No file uploaded' }, status: :unprocessable_entity and return
+        end
+      
+        csv_text = params[:file].read
+        csv = CSV.parse(csv_text, headers: true)
+      
+        errors = [] 
+      
+        ActiveRecord::Base.transaction do
+            csv.each_with_index do |row, index|
+                user_params = {
+                    first_name: row['first_name'],
+                    last_name: row['last_name'],
+                    email: row['email'],
+                    phone: row['phone'],
+                    dob: row['dob'],
+                    gender: row['gender'],
+                    address: row['address'],
+                    password: 'password',
+                    role: 'artist',
+                    super_admin_id: @current_user.super_admin_id,
+                }
+
+                artist_params = {
+                    name: row['artist_name'],
+                    first_release_year: row['first_release_year'],
+                    no_of_albums_released: row['no_of_albums_released']
+                }
+
+                begin
+                    user = @user_service.create_user(user_params)
+                    artist = @artist_service.create_artist(artist_params.merge(user_id: user.id))
+                rescue ActiveRecord::RecordInvalid => e
+                    errors << "At row number #{index + 2}: #{e.message}"
+                    raise ActiveRecord::Rollback
+                end
+            end
+        end
+      
+        if errors.any?
+            render_error(errors,"Import error.",:unprocessable_entity)
+        else
+            render_success(nil,"Artists imported successfully.")
+        end
     end
 
     private

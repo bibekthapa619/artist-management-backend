@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
     scope 'artists', controller: :artist do
       get '/', action: :index
+      get '/export', action: :export_csv
+      post '/import', action: :import_csv 
       get '/:id', action: :show
       get '/:id/music', action: :music
       put '/:id', action: :update

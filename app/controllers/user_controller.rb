@@ -21,7 +21,15 @@ class UserController < ApplicationController
     end
 
     def show
-        render_success({user: @user}, 'User fetched successfully')
+        data = {
+            user:@user
+        }
+        if(@user.role == 'artist')
+            artist_service = ArtistService.new()
+            artist = artist_service.find_artist_by_user_id(@user.id)
+            data['artist'] = artist
+        end
+        render_success(data, 'User fetched successfully')
     end
 
     def create

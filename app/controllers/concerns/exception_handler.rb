@@ -23,11 +23,16 @@ module ExceptionHandler
     end
 
     def format_validation_errors(record)
-        return {} unless record.errors.any?
+      return {} unless record.errors.any?
     
-        record.errors.messages.transform_values do |messages|
-          messages.map { |msg| msg.to_s }
-        end
+      errors_hash = {}
+    
+      record.errors.messages.each do |field, messages|
+        field_name = field.to_s.humanize(capitalize: true) 
+        errors_hash[field] = messages.map { |msg| "#{field_name} #{msg}" }
+      end
+    
+      errors_hash
     end
   
 end

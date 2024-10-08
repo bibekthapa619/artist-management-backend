@@ -123,7 +123,7 @@ class ArtistController < ApplicationController
     end
 
     def artist_params
-        params.require(:artist).permit(:name, :no_of_albums_released)
+        params.require(:artist).permit(:name, :no_of_albums_released, :first_release_year)
     end
 
     def user_params

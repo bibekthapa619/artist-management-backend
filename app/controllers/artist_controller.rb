@@ -24,7 +24,7 @@ class ArtistController < ApplicationController
     end
 
     def show
-        render_success({ artist: @artist.as_json(include: { user: { except: [:password_digest, :created_at, :updated_at] } }) }, 'Artist fetched successfully')
+        render_success({ artist: @artist,user:@artist.user }, 'Artist fetched successfully')
     end
 
     def create

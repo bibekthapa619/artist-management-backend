@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       get '/', action: :index
       get '/export', action: :export_csv
       post '/import', action: :import_csv 
+      get '/import-sample', action: :import_sample 
       get '/:id', action: :show
       get '/:id/music', action: :music
       put '/:id', action: :update

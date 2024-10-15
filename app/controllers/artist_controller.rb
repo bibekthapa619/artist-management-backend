@@ -79,6 +79,15 @@ class ArtistController < ApplicationController
       
         ActiveRecord::Base.transaction do
             csv.each_with_index do |row, index|
+                if row['first_name'].blank? || row['last_name'].blank? || row['email'].blank? || 
+                    row['phone'].blank? || row['dob'].blank? || row['gender'].blank? || 
+                    row['address'].blank? || row['artist_name'].blank? || 
+                    row['first_release_year'].blank? || row['no_of_albums_released'].blank?
+                   
+                   errors << "At row number #{index + 2}: All fields must be filled."
+                   next  
+                end
+
                 user_params = {
                     first_name: row['first_name'],
                     last_name: row['last_name'],
@@ -115,6 +124,15 @@ class ArtistController < ApplicationController
         end
     end
 
+    def import_sample
+        file_path = Rails.root.join('public', 'samples', 'artist-import-sample.csv')
+    
+        if File.exist?(file_path)
+          send_file file_path, type: 'text/csv', disposition: 'attachment', filename: 'artist-import-sample.csv'
+        else
+          render json: { error: 'File not found' }, status: :not_found
+        end
+      end
     private
 
     def set_artist

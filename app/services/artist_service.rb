@@ -2,13 +2,17 @@ require 'csv'
 
 class ArtistService
   include PaginationMeta
-    def list_artists(page = 1, per_page = 10, search = nil)
+    def list_artists(page = 1, per_page = 10, search = nil, sort = nil)
       artists = Artist.select("artists.*, COUNT(musics.id) AS music_count")  
       .left_joins(:musics) 
       .group("artists.id")
 
       if search.present?
         artists = artists.where("name LIKE ?", "%#{search}%")
+      end
+
+      if sort.present?
+        artists = artists.order(sort)
       end
   
       artists = artists.page(page).per(per_page)

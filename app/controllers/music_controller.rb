@@ -13,8 +13,21 @@ class MusicController < ApplicationController
         per_page = params[:per_page] || 10
         search = params[:search]
         artist_id = @artist.id
-    
-        musics = @music_service.list_musics(page, per_page, search, artist_id)
+        sort = params[:sort_by]
+
+        if sort == 'title-asc'
+            sort = 'title asc, id asc'
+        elsif sort == 'title-desc' 
+            sort = 'title desc, id asc'
+        elsif sort == 'last-modified'
+            sort = 'updated_at desc, id asc'
+        elsif sort == 'date-created'
+            sort = 'id asc'
+        else
+            sort = 'title asc, id asc'
+        end
+
+        musics = @music_service.list_musics(page, per_page, search, artist_id,sort)
         
         render_success(
           musics,

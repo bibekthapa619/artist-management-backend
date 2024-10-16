@@ -11,13 +11,17 @@ class UserService
         User.find(id)
     end
 
-    def list_users(page = 1, per_page = 10,super_admin_id = nil, search = nil)
+    def list_users(page = 1, per_page = 10,super_admin_id = nil, search = nil, sort = nil)
         users = User.all
         if super_admin_id.present?
             users = users.where("super_admin_id = ?",super_admin_id)
         end
         if search.present?
             users = users.where("CONCAT(first_name, ' ', last_name) LIKE :search OR email LIKE :search OR phone LIKE :search", search: "%#{search}%")
+        end
+
+        if sort.present?
+            users = users.order(sort)
         end
 
         users = users.page(page).per(per_page)

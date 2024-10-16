@@ -15,8 +15,21 @@ class ArtistController < ApplicationController
         page = params[:page] || 1
         per_page = params[:per_page] || 10
         search = params[:search]
+        sort = params[:sort_by]
 
-        artists = @artist_service.list_artists(page, per_page, search)
+        if sort == 'name-asc'
+            sort = 'name asc, id asc'
+        elsif sort == 'name-desc' 
+            sort = 'name desc, id asc'
+        elsif sort == 'last-modified'
+            sort = 'updated_at desc, id asc'
+        elsif sort == 'date-created'
+            sort = 'id asc'
+        else
+            sort = 'name asc, id asc'
+        end
+
+        artists = @artist_service.list_artists(page, per_page, search, sort)
         render_success(
             artists, 
             'Artists fetched successfully'
@@ -52,8 +65,21 @@ class ArtistController < ApplicationController
         page = params[:page] || 1
         per_page = params[:per_page] || 10
         search = params[:search]
-    
-        musics = @music_service.list_musics(page, per_page, search, @artist.id)
+        sort = params[:sort_by]
+
+        if sort == 'title-asc'
+            sort = 'title asc, id asc'
+        elsif sort == 'title-desc' 
+            sort = 'title desc, id asc'
+        elsif sort == 'last-modified'
+            sort = 'updated_at desc, id asc'
+        elsif sort == 'date-created'
+            sort = 'id asc'
+        else
+            sort = 'title asc, id asc'
+        end
+
+        musics = @music_service.list_musics(page, per_page, search, @artist.id,sort)
         
         render_success(
           musics,

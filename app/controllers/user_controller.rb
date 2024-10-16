@@ -11,9 +11,21 @@ class UserController < ApplicationController
         page = params[:page] || 1
         per_page = params[:per_page] || 10
         search = params[:search]
+        sort = params[:sort_by]
 
+        if sort == 'name-asc'
+            sort = 'first_name asc, last_name asc, id asc'
+        elsif sort == 'name-desc' 
+            sort = 'first_name desc, last_name desc, id asc'
+        elsif sort == 'last-modified'
+            sort = 'updated_at desc, id asc'
+        elsif sort == 'date-created'
+            sort = 'id asc'
+        else
+            sort = 'first_name asc, last_name asc, id asc'
+        end
 
-        users = @user_service.list_users(page, per_page,@current_user.id ,search)
+        users = @user_service.list_users(page, per_page,@current_user.id ,search, sort)
         render_success(
             users,
             'Users fetched successfully'

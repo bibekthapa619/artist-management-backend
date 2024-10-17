@@ -100,7 +100,11 @@ class ArtistController < ApplicationController
       
         csv_text = params[:file].read
         csv = CSV.parse(csv_text, headers: true)
-      
+
+        unless is_csv_header_valid(csv.headers)
+            render_error(["At row 1, check all headers are valid and included."],"Import error.",:unprocessable_entity) and return
+        end
+
         errors = [] 
       
         ActiveRecord::Base.transaction do
@@ -174,6 +178,27 @@ class ArtistController < ApplicationController
         super_admin_id = @current_user.role == 'super_admin' ? @current_user.id : @current_user.super_admin_id
         params.require(:user).permit(:first_name, :last_name, :email ,:dob, :gender, :address, :phone, :password).merge(role: 'artist', super_admin_id: super_admin_id)
     end
+
+    def is_csv_header_valid(headers)
+        valid_headers = [
+            'first_name', 
+            'last_name', 
+            'email', 
+            'phone', 
+            'dob', 
+            'gender', 
+            'address', 
+            'artist_name', 
+            'first_release_year', 
+            'no_of_albums_released'
+        ]
+        
+        missing_headers = valid_headers - headers
+        extra_headers = headers - valid_headers
+    
+        missing_headers.empty? && extra_headers.empty?
+    end
+    
 
     def set_artist_service
         @artist_service = ArtistService.new

@@ -1,6 +1,14 @@
 class DashboardController < ApplicationController
     before_action :authenticate_request
 
+    before_action only: [:get_music_stats] do
+        has_role(roles:['super_admin'])
+    end
+
+    before_action only: [:get_user_stats] do
+        has_role(roles:['super_admin'])
+    end
+
     def get_user_stats
         stats = {
           user_count:{
@@ -29,7 +37,10 @@ class DashboardController < ApplicationController
 
     def get_music_stats
         genres = Music.genres.keys
-        music_counts = Music.group(:genre).count
+        music_counts = Music.joins(artist: :user)
+            .where(users: { super_admin_id: @current_user.id })
+            .group(:genre)
+            .count
       
         stats = genres.each_with_object({}) do |genre, hash|
           hash[genre] = music_counts[genre] || 0

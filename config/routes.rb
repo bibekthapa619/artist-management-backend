@@ -36,6 +36,11 @@ Rails.application.routes.draw do
       post '/', action: :create
     end
 
+    scope 'dashboard', controller: :dashboard do
+      get '/users', action: :get_user_stats
+      get '/musics', action: :get_music_stats
+    end
+  
   end
 
 end

@@ -24,6 +24,16 @@ RSpec.describe "Register API", type: :request do
       it "registers a new user" do
         post "/api/auth/register", params: valid_attributes
         expect(response.status).to eql(200)
+
+        user = User.find_by(email: valid_attributes[:email])
+        expect(user).not_to be_nil
+
+        expect(user.first_name).to eql(valid_attributes[:first_name])
+        expect(user.last_name).to eql(valid_attributes[:last_name])
+        expect(user.email).to eql(valid_attributes[:email])
+        expect(user.role).to eql("super_admin") 
+
+        expect(user.authenticate(valid_attributes[:password])).to be_truthy
       end
     end
 

@@ -1,4 +1,4 @@
-RSpec.shared_examples "unauthenticated user" do |http_method, endpoint, params = {}|
+RSpec.shared_examples "unauthenticated user" do 
     it "returns an unauthenticated error" do
       token = "adasdsadsadad"
       send(http_method, endpoint, headers: { Authorization: "Bearer #{token}" }, params: params)

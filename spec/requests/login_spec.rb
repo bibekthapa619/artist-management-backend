@@ -68,7 +68,11 @@ RSpec.describe "Logout API", type: :request do
         end
 
         context "when the token is invalid" do
-            it_behaves_like "unauthenticated user", :post, "/api/auth/logout"
+            it_behaves_like "unauthenticated user" do
+                let(:http_method){ :post}
+                let(:endpoint) {"/api/auth/logout"}
+                let(:params) { }
+            end
         end
     end
 end
@@ -102,7 +106,11 @@ RSpec.describe "Me API", type: :request do
         end
 
         context "when the token is invalid" do
-            it_behaves_like "unauthenticated user", :get, "/api/auth/me"
+            it_behaves_like "unauthenticated user" do
+                let(:http_method){ :get}
+                let(:endpoint) {"/api/auth/me"}
+                let(:params) { }
+            end
         end
     end
 end

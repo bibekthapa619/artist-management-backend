@@ -1,4 +1,4 @@
-RSpec.shared_examples "unauthorized for role" do |role, http_method, endpoint, params = {}|
+RSpec.shared_examples "unauthorized for role" do
   it "returns an unauthorized error" do
     user = User.create!(
       first_name: "User",

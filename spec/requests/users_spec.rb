@@ -89,15 +89,19 @@ RSpec.describe "Users API", type: :request do
         end
 
         context "when the user is artist_manager" do
-            it_behaves_like "unauthorized for role",:artist_manager ,:post, "/api/users" do
+            it_behaves_like "unauthorized for role" do
+                let(:http_method) { :post}
+                let(:role) { :artist_manager}
+                let(:endpoint) { "/api/users" }
                 let(:params) { valid_user_attributes }
             end
         end
 
         context "when the user is artist" do
-            it_behaves_like "unauthorized for role",:artist, :post, "/api/users" do
-                let(:params) { valid_user_attributes }
-            end
+            let(:http_method) { :post}
+            let(:role) { :artist_manager}
+            let(:endpoint) { "/api/users" }
+            let(:params) { valid_user_attributes }
         end
     end
 
@@ -119,23 +123,84 @@ RSpec.describe "Users API", type: :request do
         end
 
         context "when the token is invalid" do
-            it "returns an unauthenticated error" do
-                token = "sdasddsad"
-
-                get "/api/users", headers: {Authorization: "Bearer #{token}"}
-                json = JSON.parse(response.body)
-
-                expect(response.status).to eql(401)
+            it_behaves_like "unauthenticated user" do
+                let(:http_method) { :get}
+                let(:endpoint) { "/api/users" }
+                let(:params) { }
             end
         end
         
         context "when the user is artist_manager" do
-            it_behaves_like "unauthorized for role",:artist_manager ,:get, "/api/users"
+            it_behaves_like "unauthorized for role" do
+                let(:http_method) { :get}
+                let(:role) { :artist_manager}
+                let(:endpoint) { "/api/users" }
+                let(:params) { }
+            end
         end
 
         context "when the user is artist" do
-            it_behaves_like "unauthorized for role",:artist, :get, "/api/users"
+            it_behaves_like "unauthorized for role" do
+                let(:http_method) { :get}
+                let(:role) { :artist}
+                let(:endpoint) { "/api/users" }
+                let(:params) { }
+            end
         end
     end
+
+    describe "GET /api/users/:id" do
+        let(:created_manager) { 
+          User.create!(
+            first_name: "User",
+            last_name: "User",
+            email: "user1@example.com",
+            password: "password",
+            role: "artist_manager",
+            dob: "2020-10-10",
+            gender: "m",
+            address: "Address"
+          ) 
+        }
+        
+        context "when the request is valid" do
+          it "returns details of user" do
+            token = generate_token_for(super_admin)
+      
+            get "/api/users/#{created_manager.id}", headers: { Authorization: "Bearer #{token}" }
+            json = JSON.parse(response.body)
+      
+            expect(response.status).to eql(200)
+            expect(json["data"]).to include("user")
+          end
+        end
+      
+        context "when the token is invalid" do
+            it_behaves_like "unauthenticated user" do
+                let(:endpoint) { "/api/users/#{created_manager.id}" }
+                let(:params) { }
+                let(:http_method) { :get}
+            end
+        end
+        
+        context "when the user is artist_manager" do
+            it_behaves_like "unauthorized for role" do
+                let(:http_method) { :get}
+                let(:role) { :artist_manager}
+                let(:endpoint) { "/api/users/#{created_manager.id}" }
+                let(:params) { }
+            end
+        end
+      
+        context "when the user is artist" do
+            it_behaves_like "unauthorized for role" do
+                let(:http_method) { :get}
+                let(:role) { "artist_manager"}
+                let(:endpoint) { "/api/users/#{created_manager.id}" }
+                let(:params) { }
+            end
+        end
+    end
+      
     
 end

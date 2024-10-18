@@ -89,7 +89,7 @@ RSpec.describe "Users API", type: :request do
         end
 
         context "when the user is artist_manager" do
-            it_behaves_like "unauthorized for role" do
+            include_examples "unauthorized for role" do
                 let(:http_method) { :post}
                 let(:role) { :artist_manager}
                 let(:endpoint) { "/api/users" }
@@ -123,7 +123,7 @@ RSpec.describe "Users API", type: :request do
         end
 
         context "when the token is invalid" do
-            it_behaves_like "unauthenticated user" do
+            include_examples "unauthenticated user" do
                 let(:http_method) { :get}
                 let(:endpoint) { "/api/users" }
                 let(:params) { }
@@ -131,7 +131,7 @@ RSpec.describe "Users API", type: :request do
         end
         
         context "when the user is artist_manager" do
-            it_behaves_like "unauthorized for role" do
+            include_examples "unauthorized for role" do
                 let(:http_method) { :get}
                 let(:role) { :artist_manager}
                 let(:endpoint) { "/api/users" }
@@ -140,7 +140,7 @@ RSpec.describe "Users API", type: :request do
         end
 
         context "when the user is artist" do
-            it_behaves_like "unauthorized for role" do
+            include_examples "unauthorized for role" do
                 let(:http_method) { :get}
                 let(:role) { :artist}
                 let(:endpoint) { "/api/users" }
@@ -176,7 +176,7 @@ RSpec.describe "Users API", type: :request do
         end
       
         context "when the token is invalid" do
-            it_behaves_like "unauthenticated user" do
+            include_examples "unauthenticated user" do
                 let(:endpoint) { "/api/users/#{created_manager.id}" }
                 let(:params) { }
                 let(:http_method) { :get}
@@ -184,7 +184,7 @@ RSpec.describe "Users API", type: :request do
         end
         
         context "when the user is artist_manager" do
-            it_behaves_like "unauthorized for role" do
+            include_examples "unauthorized for role" do
                 let(:http_method) { :get}
                 let(:role) { :artist_manager}
                 let(:endpoint) { "/api/users/#{created_manager.id}" }
@@ -193,7 +193,7 @@ RSpec.describe "Users API", type: :request do
         end
       
         context "when the user is artist" do
-            it_behaves_like "unauthorized for role" do
+            include_examples "unauthorized for role" do
                 let(:http_method) { :get}
                 let(:role) { "artist_manager"}
                 let(:endpoint) { "/api/users/#{created_manager.id}" }

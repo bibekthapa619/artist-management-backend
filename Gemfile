@@ -52,6 +52,9 @@ gem 'jwt'
 
 gem 'kaminari'
 
+gem 'rspec-rails', '~> 6.0.0', groups: [:development, :test]
+gem 'shoulda-matchers', '~> 5.0'
+
 # Gemfile
 gem 'rack-cors', require: 'rack/cors'
 

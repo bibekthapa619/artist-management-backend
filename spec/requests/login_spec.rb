@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'support/shared_examples/unauthenticated_user'
 
 RSpec.describe "Login API", type: :request do
     describe "POST /api/auth/login" do
@@ -44,7 +45,9 @@ RSpec.describe "Login API", type: :request do
             end
         end
     end
+end
 
+RSpec.describe "Logout API", type: :request do
     describe "POST /api/auth/logout", type: :request do
         let(:user) { 
             User.create!(
@@ -65,14 +68,12 @@ RSpec.describe "Login API", type: :request do
         end
 
         context "when the token is invalid" do
-            it "returns an unauthorized error" do
-                token = "adasdsadsadad"
-                post "/api/auth/logout", headers: { Authorization: "Bearer #{token}" }
-                expect(response.status).to eql(401)
-            end
+            it_behaves_like "unauthenticated user", :post, "/api/auth/logout"
         end
     end
+end
 
+RSpec.describe "Me API", type: :request do
     describe "GET /api/auth/me", type: :request do
         let(:user) { 
             User.create!(
@@ -101,11 +102,7 @@ RSpec.describe "Login API", type: :request do
         end
 
         context "when the token is invalid" do
-            it "returns an unauthorized error" do
-                token = "adasdsadsadad"
-                get "/api/auth/me", headers: { Authorization: "Bearer #{token}" }
-                expect(response.status).to eql(401)
-            end
+            it_behaves_like "unauthenticated user", :get, "/api/auth/me"
         end
     end
 end

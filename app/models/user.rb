@@ -23,4 +23,8 @@ class User < ApplicationRecord
     def check_role(roles: [])
         roles.include?(role)
     end
+
+    def generate_token
+        JsonWebToken.encode(user_id: self.id)
+    end
 end

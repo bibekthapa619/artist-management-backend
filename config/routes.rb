@@ -1,3 +1,15 @@
+require 'sidekiq/web'
+
+Sidekiq::Web.use Rack::Auth::Basic, "Protected Area" do |username, password|
+  # Use environment variables to store credentials
+  username == ENV['SIDEKIQ_USERNAME'] && password == ENV['SIDEKIQ_PASSWORD']
+end
+
+Rails.application.routes.draw do
+  # Mount Sidekiq web UI under /sidekiq path
+  mount Sidekiq::Web => '/sidekiq'
+end
+
 Rails.application.routes.draw do
   scope 'api', defaults: { format: :json } do
 
